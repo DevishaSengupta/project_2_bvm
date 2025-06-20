@@ -1,0 +1,32 @@
+# Python
+venv/
+*.pyc
+__pycache__/
+
+# Node.js
+node_modules/
+server/node_modules/
+myinventory/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json # (optional, if you want to avoid lockfile conflicts)
+
+# React build
+myinventory/build/
+myinventory/.env.local
+myinventory/.env.development.local
+myinventory/.env.test.local
+myinventory/.env.production.local
+
+# General
+.DS_Store
+Thumbs.db
+.env
+.env.*
+*.log
+
+# VSCode/IDE
+.vscode/
+.idea/
+*.swp
