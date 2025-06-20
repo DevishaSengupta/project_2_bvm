@@ -1,0 +1,2 @@
+cd myinventory
+npm start

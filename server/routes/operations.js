@@ -11,7 +11,7 @@ router.post('/add-product', (req, res) => {
   pool.query(
     'UPDATE SubCompartments SET item_id = ? WHERE box_id = ? AND sub_id = ?',
     [item_id, box_id, sub_id],
-    (err, result) => {
+    (err, result) => { 
       if (err) {
         console.error('MySQL error:', err);
         return res.status(500).json({ error: 'Database error' });
