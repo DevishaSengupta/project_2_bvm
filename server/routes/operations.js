@@ -4,13 +4,13 @@ const router = express.Router();
 // POST add product (assign item to subcompartment)
 router.post('/add-product', (req, res) => {
   const pool = req.app.get('mysqlPool');
-  const { item_id, box_id, sub_id, place } = req.body;
-  if (!item_id || !box_id || !sub_id || !place) {
+  const { item_id, box_id, sub_id } = req.body;
+  if (!item_id || !box_id || !sub_id) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
   pool.query(
-    'UPDATE SubCompartments SET item_id = ? WHERE box_id = ? AND sub_id = ? AND place = ?',
-    [item_id, box_id, sub_id, place],
+    'UPDATE SubCompartments SET item_id = ? WHERE box_id = ? AND sub_id = ?',
+    [item_id, box_id, sub_id],
     (err, result) => {
       if (err) {
         console.error('MySQL error:', err);
@@ -27,13 +27,13 @@ router.post('/add-product', (req, res) => {
 // POST retrieve product (remove item from subcompartment)
 router.post('/retrieve-product', (req, res) => {
   const pool = req.app.get('mysqlPool');
-  const { box_id, sub_id, place } = req.body;
-  if (!box_id || !sub_id || !place) {
+  const { box_id, sub_id } = req.body;
+  if (!box_id || !sub_id) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
   pool.query(
-    'UPDATE SubCompartments SET item_id = NULL WHERE box_id = ? AND sub_id = ? AND place = ?',
-    [box_id, sub_id, place],
+    'UPDATE SubCompartments SET item_id = NULL WHERE box_id = ? AND sub_id = ?',
+    [box_id, sub_id],
     (err, result) => {
       if (err) {
         console.error('MySQL error:', err);
@@ -51,9 +51,12 @@ router.post('/retrieve-product', (req, res) => {
 router.get('/item-locations', (req, res) => {
   const pool = req.app.get('mysqlPool');
   pool.query(
-    `SELECT i.item_id, i.name, s.place, s.box_id, s.sub_id
+    `SELECT i.item_id, i.name, 
+            s.subcompartment_place AS place, 
+            s.box_id, s.sub_id
      FROM Items i
-     LEFT JOIN SubCompartments s ON i.item_id = s.item_id`,
+     LEFT JOIN SubCompartments s ON i.item_id = s.item_id
+     WHERE s.subcompartment_place IS NOT NULL`,
     (err, results) => {
       if (err) {
         console.error('MySQL error:', err);
@@ -64,4 +67,4 @@ router.get('/item-locations', (req, res) => {
   );
 });
 
-module.exports = router; 
+module.exports = router;

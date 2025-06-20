@@ -4,21 +4,18 @@ const router = express.Router();
 // GET all transactions (with optional filters)
 router.get('/', (req, res) => {
   const pool = req.app.get('mysqlPool');
-  let query = 'SELECT * FROM Transactions';
-  const { sort, action } = req.query;
-  const params = [];
-
-  if (action) {
-    query += ' WHERE action = ?';
-    params.push(action);
-  }
-  if (sort === 'newest') {
-    query += ' ORDER BY time DESC';
-  } else {
-    query += ' ORDER BY transaction_id ASC';
-  }
-
-  pool.query(query, params, (err, results) => {
+  let query = `
+    SELECT 
+      t.transaction_id, 
+      i.name AS item, 
+      t.subcom_place AS location, 
+      t.action, 
+      t.timestamp AS time
+    FROM Transactions t
+    LEFT JOIN Items i ON t.item_id = i.item_id
+    ORDER BY t.transaction_id ASC
+  `;
+  pool.query(query, [], (err, results) => {
     if (err) {
       console.error('MySQL error:', err);
       return res.status(500).json({ error: 'Database error' });
