@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from './config';
 
-function TransactionsTab() {
+function TransactionsTab({ reloadKey }) {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ item: '', location: '', action: '' });
@@ -26,7 +26,7 @@ function TransactionsTab() {
   useEffect(() => {
     fetchTransactions();
     // eslint-disable-next-line
-  }, [sort, actionFilter]);
+  }, [sort, actionFilter, reloadKey]);
 
   const handleAdd = e => {
     e.preventDefault();

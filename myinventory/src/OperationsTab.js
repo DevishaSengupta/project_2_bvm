@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from './config';
 
-function OperationsTab() {
+function OperationsTab({ onTransaction }) {
   const [mode, setMode] = useState('add'); // 'add' or 'retrieve'
   const [items, setItems] = useState([]);
   const [boxes, setBoxes] = useState([]);
@@ -70,7 +70,10 @@ function OperationsTab() {
       })
     })
       .then(res => res.json())
-      .then(data => setResult(data.success ? 'Product added.' : (data.error || 'Error')))
+      .then(data => {
+        setResult(data.success ? 'Product added.' : (data.error || 'Error'));
+        if (data.success && typeof onTransaction === 'function') onTransaction();
+      })
       .catch(() => setResult('Error'));
   };
 
@@ -87,7 +90,10 @@ function OperationsTab() {
       })
     })
       .then(res => res.json())
-      .then(data => setResult(data.success ? 'Product retrieved.' : (data.error || 'Error')))
+      .then(data => {
+        setResult(data.success ? 'Product retrieved.' : (data.error || 'Error'));
+        if (data.success && typeof onTransaction === 'function') onTransaction();
+      })
       .catch(() => setResult('Error'));
   };
 
@@ -113,7 +119,7 @@ function OperationsTab() {
   };
 
   return (
-    <div>
+    <div style={{ color: '#111' }}>
       <div className="controls">
         <button
           style={{ background: mode === 'add' ? '#1976d2' : '#888', color: '#fff' }}
